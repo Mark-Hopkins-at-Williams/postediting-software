@@ -1,0 +1,10 @@
+{
+  "name": "mt-post-editing",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Simple post-editing UI for MT jsonl files (source_text / mt_text -> pe_text).",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  }
+}

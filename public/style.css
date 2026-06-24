@@ -1,0 +1,242 @@
+:root {
+  --border: #ddd;
+  --bg: #fafafa;
+  --accent: #2563eb;
+  --edited: #16a34a;
+  --text-dim: #888;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #1a1a1a;
+  background: var(--bg);
+}
+
+#root, .app {
+  height: 100vh;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 16px;
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.topbar h1 {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.topbar .filename {
+  color: var(--text-dim);
+  font-size: 13px;
+}
+
+.progress {
+  margin-left: auto;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.progress-bar {
+  width: 140px;
+  height: 6px;
+  background: #eee;
+  border-radius: 3px;
+  overflow: hidden;
+  display: inline-block;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: var(--edited);
+}
+
+.main {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.sidebar {
+  width: 320px;
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  background: #fff;
+  flex-shrink: 0;
+}
+
+.sidebar-filter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--text-dim);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: #fff;
+}
+
+.sidebar-item {
+  padding: 8px 12px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.sidebar-item:hover { background: #f5f7ff; }
+.sidebar-item.active { background: #eaf0ff; border-left: 3px solid var(--accent); }
+
+.sidebar-item .pos {
+  color: var(--text-dim);
+  flex-shrink: 0;
+  width: 28px;
+}
+
+.sidebar-item .preview {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar-item .dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-top: 4px;
+  background: #ddd;
+}
+
+.sidebar-item .dot.edited { background: var(--edited); }
+
+.editor {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 32px;
+  overflow-y: auto;
+  max-width: 900px;
+}
+
+.field {
+  margin-bottom: 20px;
+}
+
+.field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+}
+
+.source-box {
+  font-size: 17px;
+  line-height: 1.6;
+  padding: 12px 14px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.raw-mt-box {
+  font-size: 16px;
+  line-height: 1.7;
+  padding: 12px 14px;
+  background: #f4f4f4;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: #555;
+}
+
+textarea.pe-box {
+  width: 100%;
+  font-size: 17px;
+  line-height: 1.7;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  resize: vertical;
+  min-height: 120px;
+  font-family: inherit;
+}
+
+textarea.pe-box:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+button {
+  font-size: 13px;
+  padding: 7px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: #fff;
+  cursor: pointer;
+}
+
+button:hover { background: #f5f5f5; }
+
+button.primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+button.primary:hover { background: #1d4ed8; }
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.save-status {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.save-status.saved { color: var(--edited); }
+.save-status.error { color: #dc2626; }
+
+.hint {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 10px;
+}
+
+.empty-state {
+  margin: auto;
+  text-align: center;
+  color: var(--text-dim);
+}
