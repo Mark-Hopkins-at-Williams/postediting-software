@@ -8,6 +8,7 @@ you can always compare raw MT vs. post-edit later.
 
 ## Stack
 
+
 Zero dependencies, no build step:
 
 - **Backend**: `server.js` — plain Node `http`/`fs`, no Express.
