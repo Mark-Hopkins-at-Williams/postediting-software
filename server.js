@@ -8,9 +8,9 @@ const fs = require('fs');
 const path = require('path');
 const url = require('url');
 
-const PORT = Number(process.env.PORT) || 5050;
+const PORT = Number(process.env.PORT) || 5051;
 const DATA_FILE = path.resolve(
-  process.env.DATA_FILE || path.join(__dirname, 'data', 'ch2.mt.jsonl')
+  process.argv[2] || process.env.DATA_FILE || path.join(__dirname, 'data', 'ch2.mt.jsonl')
 );
 const PUBLIC_DIR = path.join(__dirname, 'public');
 
