@@ -8,7 +8,7 @@ const fs = require('fs');
 const path = require('path');
 const url = require('url');
 
-const PORT = Number(process.env.PORT) || 5051;
+const PORT = Number(process.env.PORT) || 5050;
 const DATA_FILE = path.resolve(
   process.argv[2] || process.env.DATA_FILE || path.join(__dirname, 'data', 'ch2.mt.jsonl')
 );
@@ -105,7 +105,18 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-server.listen(PORT, () => {
-  console.log(`Post-editing app running at http://localhost:${PORT}`);
-  console.log(`Editing data file: ${DATA_FILE}`);
-});
+function listen(port) {
+  server.once('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      listen(port + 1);
+    } else {
+      throw err;
+    }
+  });
+  server.listen(port, () => {
+    console.log(`Post-editing app running at http://localhost:${port}`);
+    console.log(`Editing data file: ${DATA_FILE}`);
+  });
+}
+
+listen(PORT);
