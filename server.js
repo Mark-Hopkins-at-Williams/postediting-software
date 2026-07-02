@@ -80,20 +80,25 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (req.method === 'PUT' && parsed.pathname.startsWith('/api/records/')) {
-      const unitId = decodeURIComponent(parsed.pathname.slice('/api/records/'.length));
+      // Records are addressed by their position in the file, not unit_id:
+      // datasets like the key-terms file have many rows sharing one unit_id
+      // (multiple terms from the same source sentence), so unit_id alone
+      // can't identify a single row.
+      const idx = Number(decodeURIComponent(parsed.pathname.slice('/api/records/'.length)));
       const body = JSON.parse((await readBody(req)) || '{}');
       if (typeof body.pe_text !== 'string') {
         return sendJson(res, 400, { error: 'pe_text (string) is required' });
       }
 
       const records = readRecords();
-      const idx = records.findIndex((r) => r.unit_id === unitId);
-      if (idx === -1) {
-        return sendJson(res, 404, { error: `unit_id ${unitId} not found` });
+      if (!Number.isInteger(idx) || idx < 0 || idx >= records.length) {
+        return sendJson(res, 404, { error: `record index ${idx} not found` });
       }
 
       records[idx].pe_text = body.pe_text;
-      records[idx].edited = true;
+      // "edited" means the saved text differs from the raw MT output, so
+      // using "Reset to raw MT" and saving clears the dot back to gray.
+      records[idx].edited = body.pe_text !== records[idx].mt_text;
       writeRecords(records);
       return sendJson(res, 200, { record: records[idx] });
     }
@@ -105,18 +110,27 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-function listen(port) {
-  server.once('error', (err) => {
-    if (err.code === 'EADDRINUSE') {
-      listen(port + 1);
-    } else {
-      throw err;
-    }
-  });
-  server.listen(port, () => {
-    console.log(`Post-editing app running at http://localhost:${port}`);
-    console.log(`Editing data file: ${DATA_FILE}`);
-  });
-}
+// A fresh `once('error'/'listening', ...)` pair was previously registered on
+// every retry, so a bind that only succeeded after N retries left N-1 stale
+// 'listening' listeners attached (never fired, never removed since their
+// attempt failed instead). They'd all fire together on the eventual success,
+// printing bogus "running at" lines for every port that was actually
+// rejected. Register each listener once, outside the retry loop, and track
+// the current port in a variable so the real bound port is always reported.
+let port = PORT;
 
-listen(PORT);
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    port += 1;
+    server.listen(port);
+  } else {
+    throw err;
+  }
+});
+
+server.on('listening', () => {
+  console.log(`Post-editing app running at http://localhost:${port}`);
+  console.log(`Editing data file: ${DATA_FILE}`);
+});
+
+server.listen(port);

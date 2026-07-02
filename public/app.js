@@ -144,7 +144,7 @@ function App() {
     if (!current) return;
     setSaveState('saving');
     try {
-      const res = await fetch(`/api/records/${encodeURIComponent(current.unit_id)}`, {
+      const res = await fetch(`/api/records/${currentIndex}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ pe_text: draft }),
